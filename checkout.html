@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Blessed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        purple: {
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        },
+                        dark: {
+                            900: '#0a0a0a',
+                            800: '#1a1a1a',
+                            700: '#2d2d2d',
+                            600: '#404040',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+        .glass {
+            background: rgba(26, 26, 26, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .step-active {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            color: white;
+        }
+        .step-completed {
+            background: rgba(124, 58, 237, 0.2);
+            color: #a78bfa;
+            border: 1px solid rgba(124, 58, 237, 0.5);
+        }
+        .step-pending {
+            background: rgba(45, 45, 45, 0.8);
+            color: #9ca3af;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+        }
+        .input-field {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            transition: all 0.3s;
+        }
+        .input-field:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+        }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen">
+    <nav class="fixed w-full z-50 glass border-b border-purple-600/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="index.html" class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-lg flex items-center justify-center">
+                        <i data-lucide="shirt" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <span class="text-2xl font-serif font-bold gradient-text">Velvet Blessed</span>
+                </a>
+                <a href="carrito.html" class="text-gray-400 hover:text-purple-400 transition-colors flex items-center gap-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    Volver al carrito
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-28 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-4xl font-serif font-bold mb-8 text-center">Finalizar <span class="gradient-text">Compra</span></h1>
+
+            <!-- Progress Steps -->
+            <div class="flex justify-center mb-12">
+                <div class="flex items-center gap-4">
+                    <div id="step-1-indicator" class="step-active w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all">1</div>
+                    <div class="w-16 h-1 bg-gradient-to-r from-purple-600 to-purple-800"></div>
+                    <div id="step-2-indicator" class="step-pending w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all">2</div>
+                    <div class="w-16 h-1 bg-gray-700"></div>
+                    <div id="step-3-indicator" class="step-pending w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all">3</div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Main Form -->
+                <div class="lg:col-span-2 space-y-6">
+                    
+                    <!-- Step 1: Shipping -->
+                    <div id="step-1" class="glass rounded-2xl p-6">
+                        <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                            <i data-lucide="truck" class="w-5 h-5 text-purple-400"></i>
+                            Información de Envío
+                        </h2>
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2">Nombre *</label>
+                                <input type="text" id="shipping-name" required class="input-field w-full px-4 py-3 rounded-xl text-white focus:outline-none" placeholder="Juan">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2">Apellido *</label>
+                                <input type="text" id="shipping-lastname" required class="input-field w-full px-4 py-3 rounded-xl text-white focus:outline-none" placeholder="Pérez">
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm text-gray-400 mb-2">Email *</label>
+                            <input type="email" id="shipping-email" required class="input-field w-full px-4 py-3 rounded-xl text-white focus:outline-none" placeholder="juan@email.com">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm text-gray-400 mb-2">Teléfono *</label>
+                            <input type="tel" id="shipping-phone" required class="input-field w-full px-4 py-3 rounded-xl text-white focus:outline-none" placeholder="+1 234 567 890">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm text-gray-400 mb-2">Dirección *</label>
+                            <input type="text" id="shipping-address" required class="input-field w-full px-4 py-3 rounded-xl text-white focus:outline-none" placeholder="Calle Principal 123">
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2">Ciudad *</label>
+                                <input type="text" id="shipping-city" required class="input-field w-full px-4 py-3 rounded-xl text-white focus:outline-none" placeholder="Ciudad">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2">Código Postal *</label>
+                                <input type="text" id="shipping-zip" required class="input-field w-full px-4 py-3 rounded-xl text-white focus:outline-none" placeholder="12345">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2">País *</label>
+                                <select id="shipping-country" class="input-field w-full px-4 py-3 rounded-xl text-white focus:outline-none bg-dark-800">
+                                    <option value="MX">México</option>
+                                    <option value="US">Estados Unidos</option>
+                                    <option value="ES">España</option>
+                                    <option value="AR">Argentina</option>
+                                    <option value="CO">Colombia</option>
+                                    <option value="CL">Chile</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Payment -->
+                    <div id="step-2" class="glass rounded-2xl p-6 hidden">
+                        <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                            <i data-lucide="credit-card" class="w-5 h-5 text-purple-400"></i>
+                            Información de Pago
+                        </h2>
+                        
+                        <div class="mb-6">
+                            <label class="block text-sm text-gray-400 mb-3">Método de Pago</label>
+                            <div class="grid grid-cols-3 gap-4">
+                                <button type="button" onclick="selectPayment('card')" class="payment-method active p-4 border-2 border-purple-600 rounded-xl bg-purple-600/20 text-center transition-all">
+                                    <i data-lucide="credit-card" class="w-8 h-8 mx-auto mb-2 text-purple-400"></i>
+                                    <span class="text-sm">Tarjeta</span>
+                                </button>
+                                <button type="button" onclick="selectPayment('paypal')" class="payment-method p-4 border-2 border-purple-600/30 rounded-xl text-center hover:bg-purple-600/10 transition-all">
+                                    <i data-lucide="wallet" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i>
+                                    <span class="text-sm">PayPal</span>
+                                </button>
+                                <button type="button" onclick="selectPayment('transfer')" class="payment-method p-4 border-2 border-purple-600/30 rounded-xl text-center hover:bg-purple-600/10 transition-all">
+                                    <i data-lucide="building-2" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i>
+                                    <span class="text-sm">Transferencia</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="card-form">
+                            <div class="mb-4">
+                                <label class="block text-sm text-gray-400 mb-2">Número de Tarjeta *</label>
+                                <div class="relative">
+                                    <i data-lucide="credit-card" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                                    <input type="text" id="card-number" maxlength="19" class="input-field w-full pl-12 pr-4 py-3 rounded-xl text-white focus:outline-none" placeholder="0000 0000 0000 0000">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm text-gray-400 mb-2">Nombre en la Tarjeta *</label>
+                                <input type="text" id="card-name" class="input-field w-full px-4 py-3 rounded-xl text-white focus:outline-none" placeholder="JUAN PEREZ">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-gray-400 mb-2">Fecha de Expiración *</label>
+                                    <input type="text" id="card-expiry" maxlength="5" class="input-field w-full px-4 py-3 rounded-xl text-white focus:outline-none" placeholder="MM/AA">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-400 mb-2">CVV *</label>
+                                    <div class="relative">
+                                        <input type="text" id="card-cvv" maxlength="4" class="input-field w-full px-4 py-3 rounded-xl text-white focus:outline-none" placeholder="123">
+                                        <i data-lucide="help-circle" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 cursor-help" title="Código de seguridad de 3 o 4 dígitos"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Review -->
+                    <div id="step-3" class="glass rounded-2xl p-6 hidden">
+                        <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-purple-400"></i>
+                            Resumen del Pedido
+                        </h2>
+                        <div id="order-summary" class="space-y-4 mb-6">
+                            <!-- Items loaded by JS -->
+                        </div>
+                        <div class="border-t border-purple-600/20 pt-4 space-y-2 text-sm">
+                            <div class="flex justify-between text-gray-400">
+                                <span>Subtotal</span>
+                                <span id="review-subtotal">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-gray-400">
+                                <span>Envío</span>
+                                <span id="review-shipping">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-gray-400">
+                                <span>Impuestos</span>
+                                <span id="review-tax">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-lg font-semibold text-white pt-2">
+                                <span>Total</span>
+                                <span id="review-total" class="text-purple-400">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between">
+                        <button id="prev-btn" onclick="previousStep()" class="hidden px-6 py-3 border border-purple-600/50 rounded-xl hover:bg-purple-600/10 transition-colors flex items-center gap-2">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                            Anterior
+                        </button>
+                        <button id="next-btn" onclick="nextStep()" class="ml-auto px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 rounded-xl font-semibold transition-all transform hover:scale-[1.02] flex items-center gap-2">
+                            Continuar
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Order Summary Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="glass rounded-2xl p-6 sticky top-28">
+                        <h3 class="font-semibold text-lg mb-4">Tu Orden</h3>
+                        <div id="sidebar-items" class="space-y-4 mb-4 max-h-64 overflow-y-auto">
+                            <!-- Items loaded by JS -->
+                        </div>
+                        <div class="border-t border-purple-600/20 pt-4 space-y-2">
+                            <div class="flex justify-between text-sm text-gray-400">
+                                <span>Subtotal</span>
+                                <span id="sidebar-subtotal">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-400">
+                                <span>Envío</span>
+                                <span>Gratis</span>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-400">
+                                <span>Impuestos</span>
+                                <span id="sidebar-tax">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-xl font-bold text-white pt-2">
+                                <span>Total</span>
+                                <span id="sidebar-total" class="text-purple-400">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="glass rounded-2xl p-8 max-w-md w-full text-center animate-bounce">
+            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-green-500/20 flex items-center justify-center">
+                <i data-lucide="check" class="w-10 h-10 text-green-400"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-2">¡Pedido Confirmado!</h2>
+            <p class="text-gray-400 mb-6">Gracias por tu compra. Te enviaremos un email con los detalles de tu pedido.</p>
+            <div class="bg-dark-800 rounded-lg p-4 mb-6 text-left">
+                <p class="text-sm text-gray-400">Número de pedido:</p>
+                <p class="text-lg font-mono text-purple-400">#VB-2026-012345</p>
+            </div>
+            <a href="index.html" class="block w-full py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 rounded-xl font-semibold text-white transition-all">
+                Volver a la tienda
+            </a>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCartSummary();
+            loadUserData();
+            
+            // Format card number
+            document.getElementById('card-number').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+                value = value.substring(0, 16);
+                let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+                e.target.value = formattedValue;
+            });
+
+            // Format expiry
+            document.getElementById('card-expiry').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                }
+                e.target.value = value;
+            });
+        });
+
+        function loadCartSummary() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const itemsContainer = document.getElementById('sidebar-items');
+            let subtotal = 0;
+
+            itemsContainer.innerHTML = cart.map(item => {
+                subtotal += item.price * item.quantity;
+                return `
+                    <div class="flex gap-3">
+                        <img src="${item.image}" class="w-16 h-16 object-cover rounded-lg" alt="${item.name}">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium line-clamp-1">${item.name}</p>
+                            <p class="text-xs text-gray-400">Talla: ${item.size || 'M'} x${item.quantity}</p>
+                            <p class="text-sm text-purple-400">$${(item.price * item.quantity).toFixed(2)}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const tax = subtotal * 0.16;
+            const total = subtotal + tax;
+
+            document.getElementById('sidebar-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('sidebar-tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('sidebar-total').textContent = `$${total.toFixed(2)}`;
+
+            // Load in review step too
+            const summaryContainer = document.getElementById('order-summary');
+            if (summaryContainer) {
+                summaryContainer.innerHTML = itemsContainer.innerHTML;
+                document.getElementById('review-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+                document.getElementById('review-shipping').textContent = `Gratis`;
+                document.getElementById('review-tax').textContent = `$${tax.toFixed(2)}`;
+                document.getElementById('review-total').textContent = `$${total.toFixed(2)}`;
+            }
+        }
+
+        function loadUserData() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (user) {
+                document.getElementById('shipping-name').value = user.name || '';
+                document.getElementById('shipping-lastname').value = user.lastname || '';
+                document.getElementById('shipping-email').value = user.email || '';
+                document.getElementById('shipping-phone').value = user.phone || '';
+            }
+        }
+
+        function nextStep() {
+            if (validateStep(currentStep)) {
+                if (currentStep < totalSteps) {
+                    document.getElementById(`step-${currentStep}`).classList.add('hidden');
+                    document.getElementById(`step-${currentStep + 1}`).classList.remove('hidden');
+                    
+                    // Update indicators
+                    document.getElementById(`step-${currentStep}-indicator`).classList.remove('step-active');
+                    document.getElementById(`step-${currentStep}-indicator`).classList.add('step-completed');
+                    document.getElementById(`step-${currentStep + 1}-indicator`).classList.remove('step-pending');
+                    document.getElementById(`step-${currentStep + 1}-indicator`).classList.add('step-active');
+                    
+                    currentStep++;
+                    updateButtons();
+                } else {
+                    // Submit order
+                    submitOrder();
+                }
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                document.getElementById(`step-${currentStep}`).classList.add('hidden');
+                document.getElementById(`step-${currentStep - 1}`).classList.remove('hidden');
+                
+                // Update indicators
+                document.getElementById(`step-${currentStep}-indicator`).classList.remove('step-active');
+                document.getElementById(`step-${currentStep}-indicator`).classList.add('step-pending');
+                document.getElementById(`step-${currentStep - 1}-indicator`).classList.remove('step-completed');
+                document.getElementById(`step-${currentStep - 1}-indicator`).classList.add('step-active');
+                
+                currentStep--;
+                updateButtons();
+            }
+        }
+
+        function updateButtons() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            if (currentStep === 1) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+            
+            if (currentStep === totalSteps) {
+                nextBtn.innerHTML = `Confirmar Pedido <i data-lucide="check" class="w-5 h-5"></i>`;
+            } else {
+                nextBtn.innerHTML = `Continuar <i data-lucide="arrow-right" class="w-5 h-5"></i>`;
+            }
+            lucide.createIcons();
+        }
+
+        function validateStep(step) {
+            if (step === 1) {
+                const required = ['shipping-name', 'shipping-lastname', 'shipping-email', 'shipping-phone', 'shipping-address', 'shipping-city', 'shipping-zip'];
+                for (let id of required) {
+                    const field = document.getElementById(id);
+                    if (!field.value.trim()) {
+                        field.focus();
+                        alert('Por favor completa todos los campos requeridos');
+                        return false;
+                    }
+                }
+            } else if (step === 2) {
+                const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+                if (cardNumber.length < 16) {
+                    alert('Por favor ingresa un número de tarjeta válido');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function selectPayment(method) {
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('active', 'border-purple-600', 'bg-purple-600/20');
+                el.classList.add('border-purple-600/30');
+                el.querySelector('i').classList.remove('text-purple-400');
+                el.querySelector('i').classList.add('text-gray-400');
+            });
+            
+            event.currentTarget.classList.add('active', 'border-purple-600', 'bg-purple-600/20');
+            event.currentTarget.classList.remove('border-purple-600/30');
+            event.currentTarget.querySelector('i').classList.add('text-purple-400');
+            event.currentTarget.querySelector('i').classList.remove('text-gray-400');
+        }
+
+        function submitOrder() {
+            // Clear cart
+            localStorage.removeItem('cart');
+            
+            // Show success modal
+            document.getElementById('success-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login -  Blessed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        purple: {
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        },
+                        dark: {
+                            900: '#0a0a0a',
+                            800: '#1a1a1a',
+                            700: '#2d2d2d',
+                            600: '#404040',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(26, 26, 26, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .auth-glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.4) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .tab-active {
+            background: rgba(124, 58, 237, 0.2);
+            border-bottom: 2px solid #7c3aed;
+            color: #a78bfa;
+        }
+        .tab-inactive {
+            border-bottom: 2px solid transparent;
+            color: #9ca3af;
+        }
+        .tab-inactive:hover {
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body class="text-gray-100 flex items-center justify-center p-4 relative overflow-hidden">
+    <div class="auth-glow"></div>
+    
+    <div class="w-full max-w-md glass rounded-2xl p-8 relative z-10 shadow-2xl shadow-purple-900/20">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <a href="index.html" class="inline-flex items-center gap-2 mb-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl flex items-center justify-center">
+                    <i data-lucide="shirt" class="w-7 h-7 text-white"></i>
+                </div>
+                <span class="text-3xl font-serif font-bold gradient-text"> Blessed</span>
+            </a>
+            <p class="text-gray-400 text-sm">Bienvenido de vuelta a tu estilo</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex mb-8 border-b border-purple-600/20">
+            <button onclick="switchTab('login')" id="tab-login" class="flex-1 pb-4 text-center font-medium transition-all tab-active">
+                Iniciar Sesión
+            </button>
+            <button onclick="switchTab('register')" id="tab-register" class="flex-1 pb-4 text-center font-medium transition-all tab-inactive">
+                Crear Cuenta
+            </button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="login-form" class="space-y-6" onsubmit="handleLogin(event)">
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                <div class="relative">
+                    <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                    <input type="email" id="login-email" required class="w-full pl-12 pr-4 py-3 bg-dark-800 border border-purple-600/30 rounded-xl focus:outline-none focus:border-purple-500 text-white placeholder-gray-500" placeholder="tu@email.com">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Contraseña</label>
+                <div class="relative">
+                    <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                    <input type="password" id="login-password" required class="w-full pl-12 pr-4 py-3 bg-dark-800 border border-purple-600/30 rounded-xl focus:outline-none focus:border-purple-500 text-white placeholder-gray-500" placeholder="••••••••">
+                </div>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" class="w-4 h-4 rounded border-purple-600/50 bg-dark-800 text-purple-600 focus:ring-purple-600">
+                    <span class="text-gray-400">Recordarme</span>
+                </label>
+                <a href="#" class="text-purple-400 hover:text-purple-300 transition-colors">¿Olvidaste tu contraseña?</a>
+            </div>
+            <button type="submit" class="w-full py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 rounded-xl font-semibold text-white transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+                <i data-lucide="log-in" class="w-5 h-5"></i>
+                Iniciar Sesión
+            </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="register-form" class="hidden space-y-6" onsubmit="handleRegister(event)">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Nombre</label>
+                    <input type="text" id="register-name" required class="w-full px-4 py-3 bg-dark-800 border border-purple-600/30 rounded-xl focus:outline-none focus:border-purple-500 text-white placeholder-gray-500" placeholder="Juan">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Apellido</label>
+                    <input type="text" id="register-lastname" required class="w-full px-4 py-3 bg-dark-800 border border-purple-600/30 rounded-xl focus:outline-none focus:border-purple-500 text-white placeholder-gray-500" placeholder="Pérez">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                <div class="relative">
+                    <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                    <input type="email" id="register-email" required class="w-full pl-12 pr-4 py-3 bg-dark-800 border border-purple-600/30 rounded-xl focus:outline-none focus:border-purple-500 text-white placeholder-gray-500" placeholder="tu@email.com">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Teléfono</label>
+                <div class="relative">
+                    <i data-lucide="phone" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                    <input type="tel" id="register-phone" class="w-full pl-12 pr-4 py-3 bg-dark-800 border border-purple-600/30 rounded-xl focus:outline-none focus:border-purple-500 text-white placeholder-gray-500" placeholder="+1 234 567 890">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Contraseña</label>
+                <div class="relative">
+                    <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                    <input type="password" id="register-password" required minlength="6" class="w-full pl-12 pr-4 py-3 bg-dark-800 border border-purple-600/30 rounded-xl focus:outline-none focus:border-purple-500 text-white placeholder-gray-500" placeholder="Mínimo 6 caracteres">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Confirmar Contraseña</label>
+                <div class="relative">
+                    <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                    <input type="password" id="register-confirm" required class="w-full pl-12 pr-4 py-3 bg-dark-800 border border-purple-600/30 rounded-xl focus:outline-none focus:border-purple-500 text-white placeholder-gray-500" placeholder="••••••••">
+                </div>
+            </div>
+            <label class="flex items-center gap-2 cursor-pointer text-sm">
+                <input type="checkbox" required class="w-4 h-4 rounded border-purple-600/50 bg-dark-800 text-purple-600 focus:ring-purple-600">
+                <span class="text-gray-400">Acepto los <a href="#" class="text-purple-400 hover:text-purple-300">términos y condiciones</a></span>
+            </label>
+            <button type="submit" class="w-full py-3 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 rounded-xl font-semibold text-white transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+                <i data-lucide="user-plus" class="w-5 h-5"></i>
+                Crear Cuenta
+            </button>
+        </form>
+
+        <div class="mt-8 text-center">
+            <p class="text-sm text-gray-400 mb-4">O continúa con</p>
+            <div class="flex gap-4 justify-center">
+                <button type="button" onclick="socialLogin('google')" class="w-12 h-12 rounded-full bg-dark-800 border border-purple-600/30 hover:bg-purple-600/20 flex items-center justify-center transition-colors">
+                    <i data-lucide="chrome" class="w-5 h-5 text-gray-300"></i>
+                </button>
+                <button type="button" onclick="socialLogin('facebook')" class="w-12 h-12 rounded-full bg-dark-800 border border-purple-600/30 hover:bg-purple-600/20 flex items-center justify-center transition-colors">
+                    <i data-lucide="facebook" class="w-5 h-5 text-gray-300"></i>
+                </button>
+                <button type="button" onclick="socialLogin('apple')" class="w-12 h-12 rounded-full bg-dark-800 border border-purple-600/30 hover:bg-purple-600/20 flex items-center justify-center transition-colors">
+                    <i data-lucide="apple" class="w-5 h-5 text-gray-300"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="index.html" class="text-sm text-gray-400 hover:text-purple-400 transition-colors flex items-center justify-center gap-2">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                Volver a la tienda
+            </a>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <div class="glass px-6 py-4 rounded-xl flex items-center gap-3 border border-purple-600/30 shadow-2xl">
+            <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
+            <span id="toast-message" class="text-white font-medium"></span>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function switchTab(tab) {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const loginTab = document.getElementById('tab-login');
+            const registerTab = document.getElementById('tab-register');
+
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                loginTab.classList.add('tab-active');
+                loginTab.classList.remove('tab-inactive');
+                registerTab.classList.add('tab-inactive');
+                registerTab.classList.remove('tab-active');
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                registerTab.classList.add('tab-active');
+                registerTab.classList.remove('tab-inactive');
+                loginTab.classList.add('tab-inactive');
+                loginTab.classList.remove('tab-active');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // Simulación de login (en producción sería una API)
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showToast('¡Bienvenido ' + user.name + '!');
+                setTimeout(() => window.location.href = 'index.html', 1500);
+            } else {
+                showToast('Credenciales incorrectas');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            
+            if (password !== confirm) {
+                showToast('Las contraseñas no coinciden');
+                return;
+            }
+
+            const user = {
+                name: document.getElementById('register-name').value,
+                lastname: document.getElementById('register-lastname').value,
+                email: document.getElementById('register-email').value,
+                phone: document.getElementById('register-phone').value,
+                password: password,
+                createdAt: new Date().toISOString()
+            };
+
+            // Guardar en localStorage (simulación)
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.find(u => u.email === user.email)) {
+                showToast('Este email ya está registrado');
+                return;
+            }
+            
+            users.push(user);
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            
+            showToast('¡Cuenta creada exitosamente!');
+            setTimeout(() => window.location.href = 'index.html', 1500);
+        }
+
+        function socialLogin(provider) {
+            showToast('Iniciando sesión con ' + provider + '...');
+            // Simulación
+            setTimeout(() => {
+                const mockUser = {
+                    name: 'Usuario ' + provider,
+                    email: 'user@' + provider + '.com',
+                    provider: provider
+                };
+                localStorage.setItem('currentUser', JSON.stringify(mockUser));
+                window.location.href = 'index.html';
+            }, 1500);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Check if user is already logged in
+        const currentUser = localStorage.getItem('currentUser');
+        if (currentUser) {
+            // Optionally redirect to home if already logged in
+            // window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda - Blessed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        purple: {
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        },
+                        dark: {
+                            900: '#0a0a0a',
+                            800: '#1a1a1a',
+                            700: '#2d2d2d',
+                            600: '#404040',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+        .glass {
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.3);
+        }
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: #2d2d2d;
+            outline: none;
+        }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #7c3aed;
+            cursor: pointer;
+        }
+        .range-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #7c3aed;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass border-b border-purple-600/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-2">
+                    <a href="index.html" class="flex items-center gap-2">
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-700 rounded-lg flex items-center justify-center">
+                            <i data-lucide="shirt" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <span class="text-2xl font-serif font-bold gradient-text">Blessed</span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-300 hover:text-purple-400 transition-colors font-medium">Inicio</a>
+                    <a href="productos.html" class="text-purple-400 font-medium">Tienda</a>
+                    <a href="index.html#categorias" class="text-gray-300 hover:text-purple-400 transition-colors font-medium">Categorías</a>
+                    <a href="index.html#ofertas" class="text-gray-300 hover:text-purple-400 transition-colors font-medium">Ofertas</a>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <a href="login.html" class="p-2 hover:bg-purple-600/20 rounded-lg transition-colors">
+                        <i data-lucide="user" class="w-5 h-5 text-gray-300"></i>
+                    </a>
+                    <a href="carrito.html" class="p-2 hover:bg-purple-600/20 rounded-lg transition-colors relative">
+                        <i data-lucide="shopping-bag" class="w-5 h-5 text-gray-300"></i>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-purple-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-28 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Sidebar Filters -->
+                <aside class="w-full md:w-64 flex-shrink-0">
+                    <div class="glass rounded-2xl p-6 sticky top-28">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="font-semibold text-lg">Filtros</h3>
+                            <button onclick="resetFilters()" class="text-xs text-purple-400 hover:text-purple-300">Resetear</button>
+                        </div>
+
+                        <!-- Categories -->
+                        <div class="mb-6">
+                            <h4 class="text-sm font-medium text-gray-400 mb-3">Categorías</h4>
+                            <div class="space-y-2" id="category-filters">
+                                <label class="flex items-center gap-2 cursor-pointer group">
+                                    <input type="checkbox" value="camisetas" class="w-4 h-4 rounded border-purple-600/50 bg-dark-800 text-purple-600 focus:ring-purple-600" onchange="filterProducts()">
+                                    <span class="text-sm group-hover:text-purple-400 transition-colors">Camisetas</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer group">
+                                    <input type="checkbox" value="chaquetas" class="w-4 h-4 rounded border-purple-600/50 bg-dark-800 text-purple-600 focus:ring-purple-600" onchange="filterProducts()">
+                                    <span class="text-sm group-hover:text-purple-400 transition-colors">Chaquetas</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer group">
+                                    <input type="checkbox" value="pantalones" class="w-4 h-4 rounded border-purple-600/50 bg-dark-800 text-purple-600 focus:ring-purple-600" onchange="filterProducts()">
+                                    <span class="text-sm group-hover:text-purple-400 transition-colors">Pantalones</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer group">
+                                    <input type="checkbox" value="accesorios" class="w-4 h-4 rounded border-purple-600/50 bg-dark-800 text-purple-600 focus:ring-purple-600" onchange="filterProducts()">
+                                    <span class="text-sm group-hover:text-purple-400 transition-colors">Accesorios</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer group">
+                                    <input type="checkbox" value="zapatos" class="w-4 h-4 rounded border-purple-600/50 bg-dark-800 text-purple-600 focus:ring-purple-600" onchange="filterProducts()">
+                                    <span class="text-sm group-hover:text-purple-400 transition-colors">Zapatos</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Price Range -->
+                        <div class="mb-6">
+                            <h4 class="text-sm font-medium text-gray-400 mb-3">Precio</h4>
+                            <input type="range" id="price-range" min="0" max="500" value="500" class="range-slider mb-2" oninput="updatePriceLabel(); filterProducts()">
+                            <div class="flex justify-between text-sm text-gray-500">
+                                <span>$0</span>
+                                <span id="price-value">$500</span>
+                            </div>
+                        </div>
+
+                        <!-- Sizes -->
+                        <div class="mb-6">
+                            <h4 class="text-sm font-medium text-gray-400 mb-3">Tallas</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <button class="px-3 py-1 text-xs border border-purple-600/30 rounded-full hover:bg-purple-600/20 transition-colors" onclick="toggleSize(this)">XS</button>
+                                <button class="px-3 py-1 text-xs border border-purple-600/30 rounded-full hover:bg-purple-600/20 transition-colors" onclick="toggleSize(this)">S</button>
+                                <button class="px-3 py-1 text-xs border border-purple-600/30 rounded-full hover:bg-purple-600/20 transition-colors" onclick="toggleSize(this)">M</button>
+                                <button class="px-3 py-1 text-xs border border-purple-600/30 rounded-full hover:bg-purple-600/20 transition-colors" onclick="toggleSize(this)">L</button>
+                                <button class="px-3 py-1 text-xs border border-purple-600/30 rounded-full hover:bg-purple-600/20 transition-colors" onclick="toggleSize(this)">XL</button>
+                            </div>
+                        </div>
+
+                        <!-- Sort -->
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-400 mb-3">Ordenar</h4>
+                            <select id="sort-select" onchange="sortProducts()" class="w-full px-3 py-2 bg-dark-800 border border-purple-600/30 rounded-lg text-sm focus:outline-none focus:border-purple-500">
+                                <option value="newest">Más recientes</option>
+                                <option value="price-low">Precio: menor a mayor</option>
+                                <option value="price-high">Precio: mayor a menor</option>
+                                <option value="popular">Más populares</option>
+                            </select>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Products Grid -->
+                <div class="flex-1">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="text-3xl font-serif font-bold">Nuestra <span class="gradient-text">Colección</span></h1>
+                        <span id="product-count" class="text-gray-400 text-sm">Cargando...</span>
+                    </div>
+
+                    <!-- Search Bar -->
+                    <div class="mb-6">
+                        <div class="relative">
+                            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                            <input type="text" id="search-input" placeholder="Buscar productos..." class="w-full pl-12 pr-4 py-3 bg-dark-800 border border-purple-600/30 rounded-xl focus:outline-none focus:border-purple-500 text-white placeholder-gray-500" oninput="filterProducts()">
+                        </div>
+                    </div>
+
+                    <!-- Products Container -->
+                    <div id="products-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Products loaded by JS -->
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="empty-state" class="hidden text-center py-20">
+                        <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-purple-600/10 flex items-center justify-center">
+                            <i data-lucide="search-x" class="w-12 h-12 text-purple-400"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-2">No se encontraron productos</h3>
+                        <p class="text-gray-400">Intenta ajustando tus filtros o términos de búsqueda</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-4 right-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <div class="glass-purple px-6 py-4 rounded-xl flex items-center gap-3 shadow-2xl">
+            <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
+            <span id="toast-message" class="text-white font-medium"></span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+        
+        let currentProducts = [];
+        let selectedSizes = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllProducts();
+            updateCartCount();
+            
+            // Check URL params for category
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('categoria');
+            if (category) {
+                const checkbox = document.querySelector(`input[value="${category}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    filterProducts();
+                }
+            }
+        });
+
+        function updatePriceLabel() {
+            const value = document.getElementById('price-range').value;
+            document.getElementById('price-value').textContent = `$${value}`;
+        }
+
+        function toggleSize(btn) {
+            btn.classList.toggle('bg-purple-600');
+            btn.classList.toggle('border-purple-600');
+            const size = btn.textContent;
+            if (selectedSizes.includes(size)) {
+                selectedSizes = selectedSizes.filter(s => s !== size);
+            } else {
+                selectedSizes.push(size);
+            }
+            filterProducts();
+        }
+
+        function loadAllProducts() {
+            const products = JSON.parse(localStorage.getItem('products')) || getDefaultProducts();
+            currentProducts = products;
+            displayProducts(products);
+        }
+
+        function displayProducts(products) {
+            const container = document.getElementById('products-container');
+            const emptyState = document.getElementById('empty-state');
+            const countLabel = document.getElementById('product-count');
+            
+            container.innerHTML = '';
+            countLabel.textContent = `${products.length} productos`;
+            
+            if (products.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            products.forEach(product => {
+                const card = createProductCard(product);
+                container.appendChild(card);
+            });
+            
+            lucide.createIcons();
+        }
+
+        function createProductCard(product) {
+            const div = document.createElement('div');
+            div.className = 'product-card glass rounded-2xl overflow-hidden border border-purple-600/20 flex flex-col';
+            div.innerHTML = `
+                <div class="relative aspect-[3/4] overflow-hidden group">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    ${product.discount ? `<span class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">-${product.discount}%</span>` : ''}
+                    <button onclick="addToCart(${product.id})" class="absolute bottom-4 right-4 w-10 h-10 bg-purple-600 hover:bg-purple-500 rounded-full flex items-center justify-center transition-colors opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 shadow-lg">
+                        <i data-lucide="plus" class="w-5 h-5 text-white"></i>
+                    </button>
+                </div>
+                <div class="p-4 flex-1 flex flex-col">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <h3 class="font-semibold text-white line-clamp-1">${product.name}</h3>
+                    </div>
+                    <p class="text-xs text-gray-400 mb-3">${product.category}</p>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="flex items-center gap-1">
+                            <i data-lucide="star" class="w-4 h-4 text-yellow-400 fill-yellow-400"></i>
+                            <span class="text-sm text-gray-300">${product.rating || 4.5}</span>
+                        </div>
+                        <span class="text-gray-600">•</span>
+                        <span class="text-xs text-gray-500">${product.sold || 0} vendidos</span>
+                    </div>
+                    <div class="flex items-center justify-between mt-auto">
+                        <div>
+                            ${product.originalPrice ? `<span class="text-sm text-gray-500 line-through">$${product.originalPrice}</span>` : ''}
+                            <span class="text-lg font-bold text-purple-400">$${product.price}</span>
+                        </div>
+                        <a href="producto-detail.html?id=${product.id}" class="text-sm text-purple-400 hover:text-purple-300 transition-colors">Ver detalle</a>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        function filterProducts() {
+            let products = JSON.parse(localStorage.getItem('products')) || getDefaultProducts();
+            
+            // Category filter
+            const checkedCategories = Array.from(document.querySelectorAll('#category-filters input:checked')).map(cb => cb.value);
+            if (checkedCategories.length > 0) {
+                products = products.filter(p => checkedCategories.includes(p.category));
+            }
+            
+            // Price filter
+            const maxPrice = parseInt(document.getElementById('price-range').value);
+            products = products.filter(p => p.price <= maxPrice);
+            
+            // Size filter
+            if (selectedSizes.length > 0) {
+                products = products.filter(p => p.sizes && p.sizes.some(s => selectedSizes.includes(s)));
+            }
+            
+            // Search
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            if (searchTerm) {
+                products = products.filter(p => p.name.toLowerCase().includes(searchTerm) || 
+                                                   p.description.toLowerCase().includes(searchTerm));
+            }
+            
+            // Sort
+            const sortBy = document.getElementById('sort-select').value;
+            switch(sortBy) {
+                case 'price-low':
+                    products.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    products.sort((a, b) => b.price - a.price);
+                    break;
+                case 'popular':
+                    products.sort((a, b) => (b.sold || 0) - (a.sold || 0));
+                    break;
+                case 'newest':
+                default:
+                    products.sort((a, b) => b.id - a.id);
+            }
+            
+            displayProducts(products);
+        }
+
+        function sortProducts() {
+            filterProducts();
+        }
+
+        function resetFilters() {
+            document.querySelectorAll('#category-filters input').forEach(cb => cb.checked = false);
+            document.getElementById('price-range').value = 500;
+            updatePriceLabel();
+            selectedSizes = [];
+            document.querySelectorAll('#size-filters button').forEach(btn => {
+                btn.classList.remove('bg-purple-600', 'border-purple-600');
+            });
+            document.getElementById('search-input').value = '';
+            document.getElementById('sort-select').value = 'newest';
+            filterProducts();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
